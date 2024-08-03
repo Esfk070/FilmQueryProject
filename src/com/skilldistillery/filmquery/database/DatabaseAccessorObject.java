@@ -39,6 +39,10 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				  rs.getInt(5), rs.getInt(6), rs.getDouble(7), rs.getInt(8), rs.getDouble(9), 
 				  rs.getString(10), rs.getString(11));
 		  
+		  ///TODO
+		  // get films actors
+		  film.setActors(findActorsByFilmId(film.getId()));  
+		  
 	  }
 	  rs.close();
 	  stmt.close();
@@ -47,7 +51,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	  }catch(SQLException e){
 		  e.printStackTrace();
 	  }
-	  
+ 
     return film;
   }
 
@@ -58,9 +62,10 @@ public Actor findActorById(int actorId) {
 	  String pass = "student";
 	try {
 		Connection conn = DriverManager.getConnection(URL, user, pass);
-		String sqltext= "Select actor.id, actor.first_name, actor.last_name FROM actor";
-		
+		String sqltext= "Select actor.id, actor.first_name, actor.last_name FROM actor WHERE actor.id=?";
 		PreparedStatement stmt = conn.prepareStatement(sqltext);
+		stmt.setInt(1 ,actorId);
+
 		ResultSet rs = stmt.executeQuery();
 		if(rs.next())
 		{
@@ -97,7 +102,7 @@ public List<Actor> findActorsByFilmId(int filmId) {
 	  		+ "		ON film.id = film_actor.film_id\n"
 	  		+ "	JOIN actor\n"
 	  		+ "		ON actor.id=film_actor.actor_id\n"
-	  		+ "	WHERE film.id?";
+	  		+ "	WHERE film.id=?";
 	  
 	  PreparedStatement stmt = conn.prepareStatement(sql);
 	  stmt.setInt(1 ,filmId);
@@ -107,7 +112,7 @@ public List<Actor> findActorsByFilmId(int filmId) {
 	  if(rs.next())
 	  {
 		  Actor actor = new Actor();
-		  actor.setId(rs.getInt(1));
+		  actor.setId(rs.getInt(2));
 		  actor.setFirst_name(rs.getString(3));;
 		  actor.setLast_name(rs.getString(4));;
 		  
@@ -130,6 +135,46 @@ public List<Actor> findActorsByFilmId(int filmId) {
 	return actorList;
 }
 
+@Override
+public List<Film> findByKeyword(String keyword) {
+
+	
+//	String sql = "blah blah LIKE ? or blah LIKE ?";
+//	keyword = "%" + keyword + "%";
+//	stmt.setString(1, keyword);
+//	stmt.setString(2, keyword);
+	List<Film> filmList = new ArrayList<Film>();
+	  String user = "student";
+	  String pass = "student";
+	  keyword="'%"+keyword+"%'";
+	try {
+		Connection conn = DriverManager.getConnection(URL, user, pass);
+					//			  1    2        3              4         5 
+ 		String sqltext = "SELECT id, title, description, release_year, rating FROM film WHERE title LIKE "+ keyword + " OR DESCRIPTION LIKE "+keyword;
+		PreparedStatement stmt = conn.prepareStatement(sqltext);
+		
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next())
+		{
+			Film film = new Film();
+			film.setId(rs.getInt(1));
+			film.setTitle(rs.getString(2));
+			film.setDescription(rs.getString(3));
+			film.setRelease_year(rs.getInt(4));
+			film.setRating(rs.getString(5));
+			filmList.add(film);
+		}
+		
+		
+		
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	return filmList;
+}
+
 static {
 	try {
 		Class.forName("com.mysql.cj.jdbc.Driver");
@@ -139,6 +184,8 @@ static {
 
 	}
 }
+
+
 
 
 
