@@ -60,8 +60,8 @@ public class FilmQueryApp {
 			  }
 			  else
 			  {
-				  System.out.println("Title: " + film.getTitle() + ", Year: " + film.getRelease_year()+ ", Rating: " +film.getRating() + ", Description: " + film.getDescription());
-				  
+//				  System.out.println("Title: " + film.getTitle() + ", Year: " + film.getRelease_year()+ ", Rating: " +film.getRating() + ", Description: " + film.getDescription());
+				 System.out.println(film); 
 			  }
 			  
 		  }
