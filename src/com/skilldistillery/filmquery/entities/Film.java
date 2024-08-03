@@ -29,8 +29,20 @@ public class Film {
 	
 	private List<Actor> actors;
 	
+	private String languageName;
 	
 	
+	static {
+		
+	}
+
+	public String getLanguageName() {
+		return languageName;
+	}
+
+	public void setLanguageName(String languageName) {
+		this.languageName = languageName;
+	}
 
 	public List<Actor> getActors() {
 		return actors;
@@ -150,8 +162,8 @@ public class Film {
 	@Override
 	public String toString() {
 		return "title=" + title + ", release_year=" + release_year+", rating=" + rating
-				+       ", description=" + description;
-//				+ ", language_id=" + language_id + ", rental_duration=" + rental_duration + ", rental_rate="
+				+       ", description=" + description + ", language=" + languageName + ", Actors = " + actors;
+//				 + ", rental_duration=" + rental_duration + ", rental_rate="
 //				+ rental_rate + ", length=" + length + ", replacement_cost=" + replacement_cost +  ", special_features=" + special_features + "]";
 	}
 

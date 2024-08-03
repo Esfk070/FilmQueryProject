@@ -41,7 +41,9 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		  
 		  ///TODO
 		  // get films actors
-		  film.setActors(findActorsByFilmId(film.getId()));  
+		  film.setActors(findActorsByFilmId(film.getId()));
+		  film.setLanguageName(findLanguageOfFilm(film.getId()));
+//		  film.setl(findLanguageOfFilm(film.getId()));
 		  
 	  }
 	  rs.close();
@@ -60,7 +62,8 @@ public Actor findActorById(int actorId) {
 	Actor actor = null;
 	  String user = "student";
 	  String pass = "student";
-	try {
+	try 
+	{
 		Connection conn = DriverManager.getConnection(URL, user, pass);
 		String sqltext= "Select actor.id, actor.first_name, actor.last_name FROM actor WHERE actor.id=?";
 		PreparedStatement stmt = conn.prepareStatement(sqltext);
@@ -77,7 +80,8 @@ public Actor findActorById(int actorId) {
 		
 		
 		
-	} catch (SQLException e) {
+	} catch (SQLException e) 
+	{
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
@@ -109,7 +113,7 @@ public List<Actor> findActorsByFilmId(int filmId) {
 	  
 	  ResultSet rs = stmt.executeQuery();
 	  
-	  if(rs.next())
+	  while(rs.next())
 	  {
 		  Actor actor = new Actor();
 		  actor.setId(rs.getInt(2));
@@ -163,6 +167,8 @@ public List<Film> findByKeyword(String keyword) {
 			film.setRelease_year(rs.getInt(4));
 			film.setRating(rs.getString(5));
 			filmList.add(film);
+			  film.setActors(findActorsByFilmId(film.getId()));
+			  film.setLanguageName(findLanguageOfFilm(film.getId()));
 		}
 		
 		
@@ -183,6 +189,36 @@ static {
 		e.printStackTrace();
 
 	}
+}
+
+@Override
+public String findLanguageOfFilm(int filmId) {
+	String language = null;
+	  String user = "student";
+	  String pass = "student";
+	try 
+	{
+		Connection conn = DriverManager.getConnection(URL, user, pass);
+		String sqltext= "Select film.language_id, language.name FROM language JOIN film 			\n"
+				+ "	ON film.language_id=language.id	WHERE film.id=?";
+		PreparedStatement stmt = conn.prepareStatement(sqltext);
+		stmt.setInt(1 ,filmId);
+
+		ResultSet rs = stmt.executeQuery();
+		
+		if(rs.next())
+		{
+			language=rs.getString(2);
+		}
+		
+		
+	} catch (SQLException e) 
+	{
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	return language;
 }
 
 
